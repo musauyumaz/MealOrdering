@@ -1,0 +1,43 @@
+﻿@page "/buttontest"
+@page "/buttons"
+
+
+<h3>ButtonTest</h3>
+
+<div class="form-group">
+    <div class="btn-toolbar">
+        <CustomEditButtonComponent Caption="ShowMessage" Icon="fa fa-pencil" />
+
+        <CustomEditButtonComponent Caption="Edit Caption" Color="danger" Icon="pencil" IsSmall="true" />
+
+      
+
+        <AddNewButtonComponent />
+
+    </div>
+    <div class="mt-3"> Sayı : @i </div>
+    <AddNewButtonComponent Caption="Add" OnClick="@addNumber"/>
+    <AddNewButtonComponent Caption="Add" OnClick="@resetNumber" Icon="rotate-right" Color="warning"/>
+    
+
+    
+
+</div>
+
+@code {
+
+
+    private String title = "";
+
+    private int i = 0;
+    private async Task addNumber()
+    {
+        i++;
+    }
+    private async Task resetNumber()
+    {
+        i = 0;
+    }
+
+
+}
