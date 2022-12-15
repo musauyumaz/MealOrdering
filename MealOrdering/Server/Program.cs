@@ -1,13 +1,27 @@
 using Blazored.Modal;
+using MealOrdering.Server.Data.Contexts;
+using MealOrdering.Server.Services.Extensions;
+using MealOrdering.Server.Services.Infrastructure;
+using MealOrdering.Server.Services.Services;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+builder.Services.AddDbContext<MealOrderingDbContext>(options=>
+{
+    options.UseNpgsql("User Id=postgres;password=123456;Host=localhost;Port=5432;Database=mealordering;");
+});
 
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
 
 builder.Services.AddBlazoredModal();
+builder.Services.ConfigureMapping();
+
+builder.Services.AddScoped<IUserService,UserService>();
+
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

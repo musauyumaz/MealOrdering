@@ -5,10 +5,7 @@ namespace MealOrdering.Server.Data.Contexts
 {
     public class MealOrderingDbContext : DbContext
     {
-        public MealOrderingDbContext(DbContextOptions<MealOrderingDbContext> options) : base(options)
-        {
-
-        }
+        public MealOrderingDbContext(DbContextOptions<MealOrderingDbContext> options) : base(options){}
 
         public virtual DbSet<Order> Orders { get; set; }
         public virtual DbSet<OrderItem> OrderItems { get; set; }
