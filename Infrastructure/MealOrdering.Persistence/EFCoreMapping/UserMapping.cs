@@ -13,8 +13,8 @@ namespace MealOrdering.Persistence.EFCoreMapping
             builder.Property(u => u.EmailAddress).HasMaxLength(100);
 
             builder.HasData(
-                new User() { Id = Guid.NewGuid(), FirstName = "Musa", LastName = "UYUMAZ", EmailAddress = "musa.uyumaz73@gmail.com", IsActive = true, CreatedDate = DateTime.UtcNow },
-                new User() { Id = Guid.NewGuid(), FirstName = "Serhat", LastName = "UYUMAZ", EmailAddress = "serhat.uyumaz26@gmail.com", IsActive = true, CreatedDate = DateTime.UtcNow }
+                new User() { Id = Guid.NewGuid(), FirstName = "Musa", LastName = "UYUMAZ", EmailAddress = "musa.uyumaz73@gmail.com", IsActive = true, CreatedDate = DateTime.UtcNow, Password= "123" },
+                new User() { Id = Guid.NewGuid(), FirstName = "Serhat", LastName = "UYUMAZ", EmailAddress = "serhat.uyumaz26@gmail.com", IsActive = true, CreatedDate = DateTime.UtcNow, Password = "123" }
                 );
         }
     }

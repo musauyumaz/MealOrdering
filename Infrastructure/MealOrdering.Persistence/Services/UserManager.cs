@@ -69,6 +69,11 @@ namespace MealOrdering.Persistence.Services
 
         public async Task<string> Login(string email, string password)
         {
+            var user = await _userRepository.Table.FirstOrDefaultAsync(u => u.EmailAddress == email && u.Password == password);
+            if (user == null)
+                throw new Exception("Kullanıcı Bulunamadı Bilgiler Yanlış");
+            if (!user.IsActive)
+                throw new Exception("Kullanıcı Pasif durumdadır");
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JwtSecurityKey"]));
             var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
@@ -76,7 +81,8 @@ namespace MealOrdering.Persistence.Services
 
             var claims = new[]
             {
-                new Claim(ClaimTypes.Email,email)
+                new Claim(ClaimTypes.Email,email),
+                new Claim(ClaimTypes.Name,$"{user.FirstName} {user.LastName}")
             };
             var token = new JwtSecurityToken(issuer: _configuration["JwtIssuer"], audience: _configuration["JwtAudience"], claims: claims, expires: expiry, signingCredentials: credentials);
             string createdToken = new JwtSecurityTokenHandler().WriteToken(token);

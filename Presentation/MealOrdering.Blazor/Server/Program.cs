@@ -1,3 +1,4 @@
+using Blazored.LocalStorage;
 using Blazored.Modal;
 using ETicaretAPI.Application;
 using MealOrdering.Persistence;
@@ -15,6 +16,7 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
 
 builder.Services.AddBlazoredModal();
+builder.Services.AddBlazoredLocalStorage();
 
 builder.Services.AddAuthentication(options=>
 {
