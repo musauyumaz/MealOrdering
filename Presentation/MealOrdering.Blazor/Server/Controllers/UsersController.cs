@@ -1,4 +1,5 @@
-﻿using MealOrdering.Application.Features.Users.Queries.GetAll;
+﻿using MealOrdering.Application.Features.Users.DTOs;
+using MealOrdering.Application.Features.Users.Queries.GetAll;
 using MealOrdering.Application.Services.PersistenceServices;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -22,7 +23,7 @@ namespace MealOrdering.Blazor.Server.Controllers
         //{
         //    GetAllUserQueryResponse response = await _mediator.Send(getAllUserQueryRequest);
         //    return Ok(response);
-        //} 
+        //}
         #endregion
         private readonly IUserService _userService;
 
@@ -34,6 +35,18 @@ namespace MealOrdering.Blazor.Server.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAllUser()
             => Ok(await _userService.GetAllUsers());
+        [HttpGet]
+        public async Task<IActionResult> GetByUserId(string id)
+            => Ok(await _userService.GetUserById(id));
+        [HttpPost]
+        public async Task<IActionResult> CreateUser(CreateUserDTO createUserDTO)
+            => Ok(await _userService.CreateUser(createUserDTO));
+        [HttpPut]
+        public async Task<IActionResult> UpdateUser(UpdateUserDTO updateUserDTO)
+            => Ok(await _userService.UpdateUser(updateUserDTO));
+        [HttpDelete]
+        public async Task<IActionResult> DeleteUserById(string id)
+            => Ok(await _userService.DeleteUserById(id));
 
     }
 }

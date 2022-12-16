@@ -20,11 +20,10 @@ namespace MealOrdering.Blazor.Client.Pages.Users.CSharp
         protected async Task LoadData()
         {
             _httpClient.BaseAddress = new Uri("https://localhost:7268/");
-            HttpResponseMessage httpResponse = await _httpClient.GetAsync("api/Users/GetAllUser");
-            var data = await httpResponse.Content.ReadFromJsonAsync<List<UserListJson>>();
+            var data = await _httpClient.GetFromJsonAsync<List<UserListJson>>("api/Users/GetAllUser");
 
             if (data != null)
-                Console.WriteLine();
+                users = data;
                 //users = data;
         }
     }

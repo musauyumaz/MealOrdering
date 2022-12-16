@@ -4,6 +4,6 @@ namespace MealOrdering.Application.Features.Users.Queries.GetAll
 {
     public class GetAllUserQueryResponse
     {
-        public ListUserDTO Users { get; set; }
+        public List<ListUserDTO> Users { get; set; }
     }
 }

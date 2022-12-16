@@ -4,6 +4,11 @@ namespace MealOrdering.Application.Services.PersistenceServices
 {
     public interface IUserService
     {
-        Task<ListUserDTO> GetAllUsers();
+        Task<List<ListUserDTO>> GetAllUsers();
+        Task<UserDTO> GetUserById(string id);
+        Task<bool> CreateUser(CreateUserDTO createUserDTO);
+        Task<bool> UpdateUser(UpdateUserDTO updateUserDTO);
+        Task<bool> DeleteUserById(string id);
     }
+
 }
