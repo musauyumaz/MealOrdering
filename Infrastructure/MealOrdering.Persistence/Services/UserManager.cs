@@ -2,16 +2,22 @@
 using MealOrdering.Application.Repositories.Users;
 using MealOrdering.Application.Services.PersistenceServices;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
 
 namespace MealOrdering.Persistence.Services
 {
     public class UserManager : IUserService
     {
         private readonly IUserRepository _userRepository;
-
-        public UserManager(IUserRepository userRepository)
+        private readonly IConfiguration _configuration;
+        public UserManager(IUserRepository userRepository, IConfiguration configuration)
         {
             _userRepository = userRepository;
+            _configuration = configuration;
         }
 
         public async Task<bool> CreateUser(CreateUserDTO createUserDTO)
@@ -59,6 +65,22 @@ namespace MealOrdering.Persistence.Services
             else
                 throw new Exception("User Not Found");
 
+        }
+
+        public async Task<string> Login(string email, string password)
+        {
+
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JwtSecurityKey"]));
+            var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+            var expiry = DateTime.Now.AddDays(int.Parse(_configuration["JwtExpiryInDays"].ToString()));
+
+            var claims = new[]
+            {
+                new Claim(ClaimTypes.Email,email)
+            };
+            var token = new JwtSecurityToken(issuer: _configuration["JwtIssuer"], audience: _configuration["JwtAudience"], claims: claims, expires: expiry, signingCredentials: credentials);
+            string createdToken = new JwtSecurityTokenHandler().WriteToken(token);
+            return createdToken;
         }
 
         public async Task<bool> UpdateUser(UpdateUserDTO updateUserDTO)
