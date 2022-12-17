@@ -1,0 +1,64 @@
+﻿@page "/login"
+@layout MealOrdering.Blazor.Client.Shared.EmptyLayout
+
+<div class="container-fluid h-100">
+    <div class="row justify-content-center align-items-center h-100">
+        <div class="col col-sm-6 col-md-6 col-lg-4 col-xl-3">
+            <EditForm Model="@userLoginDTO" OnValidSubmit="@LoginProcess">
+                <DataAnnotationsValidator />
+
+                <div class="form-group mb-3">
+                    <input @bind-value="@userLoginDTO.Email" class="form-control form-control-lg" type="text" placeholder="Email Address" />
+                </div>
+                <div class="form-group mb-3">
+                    <input @bind-value="@userLoginDTO.Password" class="form-control form-control-lg" type="password" placeholder="Password" />
+                </div>
+                <div class="form-group mb-3">
+                    <button class="btn btn-info btn-block">Login</button>
+                </div>
+            </EditForm>
+        </div>
+    </div>
+</div>
+
+@code {
+    [Inject]
+    HttpClient HttpClient { get; set; }
+
+    [Inject]
+    ModalManager ModalManager { get; set; }
+
+    [Inject]
+    NavigationManager NavigationManager { get; set; }
+
+
+    private UserLoginDTO userLoginDTO = new();
+
+
+    public async Task LoginProcess()
+    {
+        HttpClient.BaseAddress = new("https://localhost:7268/");
+        var response = await HttpClient.PostAsJsonAsync("api/users/login", userLoginDTO);
+        if (response.IsSuccessStatusCode)
+        {
+            var data = await response.Content.ReadFromJsonAsync<UserLoginResponseDTO>();
+
+            if (data != null)
+            {
+
+                NavigationManager.NavigateTo("/");
+            }
+            else
+            {
+                await ModalManager.ShowMessageAsync("Login Error", "Hata");
+            }
+        }
+        else
+        {
+            
+        }
+    }
+}
+
+
+

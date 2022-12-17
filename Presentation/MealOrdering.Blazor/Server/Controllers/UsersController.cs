@@ -47,10 +47,10 @@ namespace MealOrdering.Blazor.Server.Controllers
         [HttpDelete]
         public async Task<IActionResult> DeleteUserById(string id)
             => Ok(await _userService.DeleteUserById(id));
-        [HttpGet]
-        public async Task<IActionResult> Login(string email,string password)
+        [HttpPost]
+        public async Task<IActionResult> Login(UserLoginRequestDTO userLoginRequestDTO)
         {
-            var response = await _userService.Login(email, password);
+            var response = await _userService.Login(userLoginRequestDTO);
             return Ok(response);
         }
     }

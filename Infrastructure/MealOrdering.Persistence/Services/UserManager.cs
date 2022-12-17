@@ -1,6 +1,7 @@
 ﻿using MealOrdering.Application.Features.Users.DTOs;
 using MealOrdering.Application.Repositories.Users;
 using MealOrdering.Application.Services.PersistenceServices;
+using MealOrdering.Persistence.Helpers;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
@@ -67,9 +68,11 @@ namespace MealOrdering.Persistence.Services
 
         }
 
-        public async Task<string> Login(string email, string password)
+        public async Task<UserLoginResponseDTO> Login(UserLoginRequestDTO userLoginRequestDTO)
         {
-            var user = await _userRepository.Table.FirstOrDefaultAsync(u => u.EmailAddress == email && u.Password == password);
+            var encryptedPassword = PasswordEncrypterHelper.Encrypt(userLoginRequestDTO.Password);
+
+            var user = await _userRepository.Table.FirstOrDefaultAsync(u => u.EmailAddress == userLoginRequestDTO.Email && u.Password == encryptedPassword);
             if (user == null)
                 throw new Exception("Kullanıcı Bulunamadı Bilgiler Yanlış");
             if (!user.IsActive)
@@ -81,12 +84,24 @@ namespace MealOrdering.Persistence.Services
 
             var claims = new[]
             {
-                new Claim(ClaimTypes.Email,email),
+                new Claim(ClaimTypes.Email,userLoginRequestDTO.Email),
                 new Claim(ClaimTypes.Name,$"{user.FirstName} {user.LastName}")
             };
             var token = new JwtSecurityToken(issuer: _configuration["JwtIssuer"], audience: _configuration["JwtAudience"], claims: claims, expires: expiry, signingCredentials: credentials);
             string createdToken = new JwtSecurityTokenHandler().WriteToken(token);
-            return createdToken;
+
+            return new() 
+            { 
+                ApiToken = createdToken,
+                User = new() 
+                { 
+                    FullName = $"{user.FirstName} {user.LastName}",
+                    Email = user.EmailAddress,
+                    Status = user.IsActive,
+                    CreatedAt = user.CreatedDate,
+                    Id = user.Id.ToString()
+                } 
+            };
         }
 
         public async Task<bool> UpdateUser(UpdateUserDTO updateUserDTO)
