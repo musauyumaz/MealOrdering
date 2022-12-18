@@ -3,6 +3,7 @@ using System;
 using MealOrdering.Persistence.Contexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace MealOrdering.Persistence.Migrations
 {
     [DbContext(typeof(MealOrderingDbContext))]
-    partial class MealOrderingDbContextModelSnapshot : ModelSnapshot
+    [Migration("20221218135846_UserPasswordEncryption")]
+    partial class UserPasswordEncryption
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

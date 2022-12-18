@@ -1,4 +1,6 @@
 ﻿@page "/login"
+@using System.Net.Http.Headers;
+
 @layout MealOrdering.Blazor.Client.Shared.EmptyLayout
 
 <div class="container-fluid h-100">
@@ -31,6 +33,11 @@
     [Inject]
     NavigationManager NavigationManager { get; set; }
 
+    [Inject]
+    ILocalStorageService LocalStorageService { get; set; }
+
+    [Inject]
+    AuthenticationStateProvider AuthenticationStateProvider { get; set; }
 
     private UserLoginDTO userLoginDTO = new();
 
@@ -45,6 +52,13 @@
 
             if (data != null)
             {
+                await LocalStorageService.SetItemAsync("token",data.ApiToken);
+                await LocalStorageService.SetItemAsync("email",data.User.Email);
+
+                await (AuthenticationStateProvider as AuthStateProvider).NotifyUserLogin(data.User.Email);
+
+                HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", data.ApiToken);
+
 
                 NavigationManager.NavigateTo("/");
             }

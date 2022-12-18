@@ -2,12 +2,15 @@
 using MealOrdering.Application.Features.Users.Queries.GetAll;
 using MealOrdering.Application.Services.PersistenceServices;
 using MediatR;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace MealOrdering.Blazor.Server.Controllers
 {
     [Route("api/[controller]/[action]")]
     [ApiController]
+    [Authorize]
     public class UsersController : ControllerBase
     {
         #region MediatR
@@ -48,6 +51,7 @@ namespace MealOrdering.Blazor.Server.Controllers
         public async Task<IActionResult> DeleteUserById(string id)
             => Ok(await _userService.DeleteUserById(id));
         [HttpPost]
+        [AllowAnonymous]
         public async Task<IActionResult> Login(UserLoginRequestDTO userLoginRequestDTO)
         {
             var response = await _userService.Login(userLoginRequestDTO);

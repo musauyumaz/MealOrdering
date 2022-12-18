@@ -1,11 +1,14 @@
 ﻿using MealOrdering.Application.Features.Orders.DTOs;
 using MealOrdering.Application.Services.PersistenceServices;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace MealOrdering.Blazor.Server.Controllers
 {
     [Route("api/[controller]/[action]")]
     [ApiController]
+    [Authorize]
     public class OrdersController : ControllerBase
     {
         private readonly IOrderService _orderService;
