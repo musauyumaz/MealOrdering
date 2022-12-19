@@ -36,6 +36,7 @@ namespace MealOrdering.Blazor.Server.Controllers
         }
 
         [HttpGet]
+        [AllowAnonymous]
         public async Task<IActionResult> GetAllUser()
             => Ok(await _userService.GetAllUsers());
         [HttpGet]

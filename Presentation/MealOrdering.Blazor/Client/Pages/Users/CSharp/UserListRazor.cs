@@ -1,8 +1,9 @@
-﻿using MealOrdering.Blazor.Client.Pages.Users.Html;
+﻿using MealOrdering.Blazor.Client.CustomExceptions;
+using MealOrdering.Blazor.Client.Utilities;
 using MealOrdering.Blazor.Shared.Contracts.Users;
+using MealOrdering.Client.Utilities;
 using Microsoft.AspNetCore.Components;
 using System.Net.Http.Json;
-using System.Text.Json;
 
 namespace MealOrdering.Blazor.Client.Pages.Users.CSharp
 {
@@ -12,6 +13,8 @@ namespace MealOrdering.Blazor.Client.Pages.Users.CSharp
         HttpClient _httpClient = HttpClientFactory.Create();
         protected List<UserListJson> users;
 
+        [Inject]
+        ModalManager ModalManager { get; set; }
 
         protected override async Task OnInitializedAsync()
         {
@@ -20,11 +23,17 @@ namespace MealOrdering.Blazor.Client.Pages.Users.CSharp
         protected async Task LoadData()
         {
             _httpClient.BaseAddress = new Uri("https://localhost:7268/");
-            var data = await _httpClient.GetFromJsonAsync<List<UserListJson>>("api/Users/GetAllUser");
+            try
+            {
+                users = await _httpClient.GetServiceResponseAsync<List<UserListJson>>("api/Users/GetAllUser", true);
+            }
+            catch (Exception ex)
+            {
+                await ModalManager.ShowMessageAsync("Hata!", ex.Message);
+            }
 
-            if (data != null)
-                users = data;
-                //users = data;
+           
+
         }
     }
 }
