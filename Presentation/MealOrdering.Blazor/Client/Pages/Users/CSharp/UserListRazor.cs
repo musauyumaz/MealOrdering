@@ -27,12 +27,16 @@ namespace MealOrdering.Blazor.Client.Pages.Users.CSharp
             {
                 users = await _httpClient.GetServiceResponseAsync<List<UserListJson>>("api/Users/GetAllUser", true);
             }
+            catch (ApiException ex)
+            {
+                await ModalManager.ShowMessageAsync("Hata!", ex.Message);
+            }
             catch (Exception ex)
             {
                 await ModalManager.ShowMessageAsync("Hata!", ex.Message);
             }
 
-           
+
 
         }
     }
