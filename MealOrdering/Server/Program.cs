@@ -1,3 +1,4 @@
+using Blazored.Modal;
 using Microsoft.AspNetCore.ResponseCompression;
 
 namespace MealOrdering
@@ -12,6 +13,8 @@ namespace MealOrdering
 
             builder.Services.AddControllersWithViews();
             builder.Services.AddRazorPages();
+
+            builder.Services.AddBlazoredModal();
 
             var app = builder.Build();
 

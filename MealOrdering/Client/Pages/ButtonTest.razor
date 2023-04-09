@@ -1,20 +1,36 @@
 ﻿@page "/buttontest"
 @page "/buttons"
 
-<h3>ButtonTest</h3>
+
+
+@inject IModalService _modalService;
+@inject ModalManager _modalManager;
+
+<h3>@title</h3>
 
 <div class="form-group">
     <div class="container">
         <div class="btn-toolbar">
-            <CustomEditComponent ButtonText="Test Edit Button" Color="primary" Icon="pencil-square-o" />
-            <CustomEditComponent ButtonText="Edit Button" Color="danger" Icon="pencil"/>
-            <button class="btn btn-danger">Danger Button</button>
+            <CustomEditComponent OnClick="ChangeTitle" />
+            <CustomEditComponent OnClick="ShowConfirmation" Caption="Edit Caption" Color="danger" Icon="pencil" IsSmall="false" />
 
+            <AddNewButtonComponent />
         </div>
     </div>
 
 </div>
 
 @code {
+    private string title = "";
 
+    private async Task ChangeTitle()
+    {
+        await _modalManager.ShowMessageAsync("Show Message Title", "Record deleted", 3000);
+    }
+    private async Task ShowConfirmation()
+    {
+        bool result = await _modalManager.ShowConfirmationAsync("Confirmation", "Are you sure that it will be deleted?");
+        title = result ? "Yes Just Clicked" : "No Just Clicked";
+
+    }
 }
