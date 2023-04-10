@@ -1,5 +1,9 @@
 using Blazored.Modal;
-using Microsoft.AspNetCore.ResponseCompression;
+using MealOrdering.Server.Data.Contexts;
+using MealOrdering.Server.Services.Extensions;
+using MealOrdering.Server.Services.Infrastructure;
+using MealOrdering.Server.Services.Services;
+using Microsoft.EntityFrameworkCore;
 
 namespace MealOrdering
 {
@@ -15,6 +19,15 @@ namespace MealOrdering
             builder.Services.AddRazorPages();
 
             builder.Services.AddBlazoredModal();
+
+            builder.Services.ConfigureMapping();
+
+            builder.Services.AddScoped<IUserService, UserService>();
+
+            builder.Services.AddDbContext<MealOrderingDbContext>(config => {
+                config.UseNpgsql("User ID=postgres;Password=123456;Host=localhost;Port=5432;Database=MealOrdering;");
+                config.EnableSensitiveDataLogging();
+            });
 
             var app = builder.Build();
 
