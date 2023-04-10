@@ -1,5 +1,6 @@
 ﻿using MealOrdering.Server.Data.Models;
 using Microsoft.EntityFrameworkCore;
+using System.Reflection;
 
 namespace MealOrdering.Server.Data.Contexts
 {
@@ -14,6 +15,8 @@ namespace MealOrdering.Server.Data.Contexts
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.HasPostgresExtension("uuid-ossp");
+            modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
             base.OnModelCreating(modelBuilder);
         }
     }

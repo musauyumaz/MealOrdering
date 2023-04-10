@@ -11,7 +11,7 @@ namespace MealOrdering.Server.Data.Contexts.ModelMappings
             builder.ToTable("Orders", "public");
             builder.HasKey(o => o.Id).HasName("pk_Orders_id");
 
-            builder.Property(o => o.Id).HasColumnType<Guid>("uuid").HasDefaultValueSql<Guid>("UUID_GENERATE_V4()").IsRequired();
+            builder.Property(o => o.Id).HasColumnType<Guid>("uuid").HasDefaultValueSql<Guid>("uuid_generate_v4()").IsRequired();
 
             builder.Property(o => o.Name).HasColumnType("character varying").HasMaxLength(100);
             builder.Property(o => o.Description).HasColumnType("character varying").HasMaxLength(1000);
@@ -19,7 +19,7 @@ namespace MealOrdering.Server.Data.Contexts.ModelMappings
             builder.Property(o => o.SupplierId).HasColumnType("uuid").ValueGeneratedNever();
             builder.Property(o => o.ExpireDate).HasColumnType("timestamp without time zone").IsRequired();
 
-            builder.Property(o => o.CreatedDate).HasColumnType("timestamp without time zone").HasDefaultValueSql("NOW()").ValueGeneratedOnAdd();
+            builder.Property(o => o.CreatedDate).HasColumnType("timestamp without time zone").HasDefaultValueSql("now()").ValueGeneratedOnAdd();
             builder.Property(o => o.IsActive).HasColumnType("boolean").HasDefaultValueSql("true");
 
 

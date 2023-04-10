@@ -11,13 +11,13 @@ namespace MealOrdering.Server.Data.Contexts.ModelMappings
             builder.ToTable("Users","public");
             builder.HasKey(u => u.Id).HasName("pk_users_id");
 
-            builder.Property(u=>u.Id).HasColumnType<Guid>("uuid").HasDefaultValueSql<Guid>("UUID_GENERATE_V4()").IsRequired() ;
+            builder.Property(u=>u.Id).HasColumnType<Guid>("uuid").HasDefaultValueSql<Guid>("uuid_generate_v4()").IsRequired() ;
 
             builder.Property(u => u.FirstName).HasColumnType("character varying").HasMaxLength(100);
             builder.Property(u => u.LastName).HasColumnType("character varying").HasMaxLength(100);
             builder.Property(u => u.EmailAddress).HasColumnType("character varying").HasMaxLength(100);
 
-            builder.Property(u => u.CreatedDate).HasColumnType("timestamp without time zone").HasDefaultValueSql("NOW()").ValueGeneratedOnAdd();
+            builder.Property(u => u.CreatedDate).HasColumnType("timestamp without time zone").HasDefaultValueSql("now()").ValueGeneratedOnAdd();
             builder.Property(u => u.IsActive).HasColumnType("boolean").HasDefaultValueSql("true");
         }
     }
