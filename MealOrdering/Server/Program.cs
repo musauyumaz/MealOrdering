@@ -3,7 +3,10 @@ using MealOrdering.Server.Data.Contexts;
 using MealOrdering.Server.Services.Extensions;
 using MealOrdering.Server.Services.Infrastructure;
 using MealOrdering.Server.Services.Services;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 namespace MealOrdering
 {
@@ -24,12 +27,33 @@ namespace MealOrdering
 
             builder.Services.AddScoped<IUserService, UserService>();
 
-            builder.Services.AddDbContext<MealOrderingDbContext>(config => {
+            builder.Services.AddDbContext<MealOrderingDbContext>(config =>
+            {
                 config.UseNpgsql("User ID=postgres;Password=123456;Host=localhost;Port=5432;Database=MealOrdering;");
                 config.EnableSensitiveDataLogging();
             });
 
+            builder.Services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            }).AddJwtBearer(options =>
+            {
+                options.TokenValidationParameters = new()
+                {
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidateLifetime = true,
+                    ValidateIssuerSigningKey = true,
+
+                    ValidIssuer = builder.Configuration["JWT:Issuer"],
+                    ValidAudience = builder.Configuration["JWT:Audience"],
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWT:SecurityKey"]))
+                };
+            });
+
             var app = builder.Build();
+
 
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())

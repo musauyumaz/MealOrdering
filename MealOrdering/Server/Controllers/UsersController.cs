@@ -16,9 +16,18 @@ namespace MealOrdering.Server.Controllers
             _userService = userService;
         }
         [HttpGet]
+        public ServiceResponse<string> Login(string email, string password)
+        {
+            return new()
+            {
+                Value = _userService.Login(email, password)
+            };
+        }
+
+        [HttpGet]
         public async Task<ServiceResponse<List<UserDTO>>> GetUsers()
         {
-            return new() {Value = await _userService.GetUsers()};
+            return new() { Value = await _userService.GetUsers() };
         }
 
         [HttpPost]

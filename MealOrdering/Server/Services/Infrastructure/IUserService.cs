@@ -9,5 +9,6 @@ namespace MealOrdering.Server.Services.Infrastructure
         Task<UserDTO> CreateUser(UserDTO userDTO);
         Task<UserDTO> UpdateUser(UserDTO userDTO);
         Task<bool> DeleteUserById(Guid id);
+        string Login(string email,string password);
     }
 }

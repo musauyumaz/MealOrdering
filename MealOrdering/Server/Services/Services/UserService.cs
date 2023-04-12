@@ -5,6 +5,10 @@ using MealOrdering.Server.Data.Models;
 using MealOrdering.Server.Services.Infrastructure;
 using MealOrdering.Shared.DTOs;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
 
 namespace MealOrdering.Server.Services.Services
 {
@@ -12,10 +16,12 @@ namespace MealOrdering.Server.Services.Services
     {
         private IMapper _mapper;
         private MealOrderingDbContext _context;
-        public UserService(IMapper mapper, MealOrderingDbContext context)
+        private IConfiguration _configuration;
+        public UserService(IMapper mapper, MealOrderingDbContext context, IConfiguration configuration)
         {
             _mapper = mapper;
             _context = context;
+            _configuration = configuration;
         }
 
         public async Task<UserDTO> CreateUser(UserDTO userDTO)
@@ -58,6 +64,24 @@ namespace MealOrdering.Server.Services.Services
                          .Where(u => u.IsActive)
                          .ProjectTo<UserDTO>(_mapper.ConfigurationProvider)
                          .ToListAsync();
+        }
+
+        public string Login(string email, string password)
+        {
+            //Veritabanı Doğrulama İşlemleri
+
+            SymmetricSecurityKey key = new(Encoding.UTF8.GetBytes(_configuration["JWT:SecurityKey"]));
+            SigningCredentials credentials = new(key, SecurityAlgorithms.HmacSha256);
+            DateTime expiryDate = DateTime.Now.AddDays(int.Parse(_configuration["JWT:ExpiryInDays"].ToString()));
+
+            Claim[] claims = new[]
+            {
+                new Claim(ClaimTypes.Email,email)
+            };
+            JwtSecurityToken token = new(_configuration["JWT:Issuer"], _configuration["JWT:Audience"], claims, null, expiryDate, credentials);
+            string tokenStr = new JwtSecurityTokenHandler().WriteToken(token);
+
+            return tokenStr;
         }
 
         public async Task<UserDTO> UpdateUser(UserDTO userDTO)
