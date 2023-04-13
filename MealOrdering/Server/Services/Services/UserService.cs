@@ -4,6 +4,7 @@ using MealOrdering.Server.Data.Contexts;
 using MealOrdering.Server.Data.Models;
 using MealOrdering.Server.Services.Infrastructure;
 using MealOrdering.Shared.DTOs;
+using MealOrdering.Shared.Utils;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
@@ -66,9 +67,18 @@ namespace MealOrdering.Server.Services.Services
                          .ToListAsync();
         }
 
-        public string Login(string email, string password)
+        public async Task<string> Login(string email, string password)
         {
             //Veritabanı Doğrulama İşlemleri
+
+            string encryptedPassword = PasswordEncrypter.Encrypt(password);
+            User user = await _context.Users.FirstOrDefaultAsync(u => u.EmailAddress == email && u.Password == encryptedPassword);
+
+            if (user == null)
+                throw new Exception("Kullanıcı Bulunamadı veya Bilgiler Yanlış");
+
+            if (!user.IsActive)
+                throw new Exception("Kullanıcı Pasif Durumdadır!");
 
             SymmetricSecurityKey key = new(Encoding.UTF8.GetBytes(_configuration["JWT:SecurityKey"]));
             SigningCredentials credentials = new(key, SecurityAlgorithms.HmacSha256);

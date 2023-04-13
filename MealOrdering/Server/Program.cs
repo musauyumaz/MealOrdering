@@ -1,3 +1,4 @@
+using Blazored.LocalStorage;
 using Blazored.Modal;
 using MealOrdering.Server.Data.Contexts;
 using MealOrdering.Server.Services.Extensions;
@@ -51,6 +52,8 @@ namespace MealOrdering
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWT:SecurityKey"]))
                 };
             });
+
+            builder.Services.AddBlazoredLocalStorage();
 
             var app = builder.Build();
 

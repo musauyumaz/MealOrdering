@@ -1,3 +1,4 @@
+using Blazored.LocalStorage;
 using Blazored.Modal;
 using MealOrdering.Client;
 using MealOrdering.Client.Utils;
@@ -18,6 +19,7 @@ namespace MealOrdering.Client
             builder.Services.AddScoped<ModalManager>();
 
             builder.Services.AddBlazoredModal();
+            builder.Services.AddBlazoredLocalStorage();
 
             await builder.Build().RunAsync();
         }

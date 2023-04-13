@@ -16,11 +16,11 @@ namespace MealOrdering.Server.Controllers
             _userService = userService;
         }
         [HttpGet]
-        public ServiceResponse<string> Login(string email, string password)
+        public async Task<ServiceResponse<string>> Login(string email, string password)
         {
             return new()
             {
-                Value = _userService.Login(email, password)
+                Value = await _userService.Login(email, password)
             };
         }
 
