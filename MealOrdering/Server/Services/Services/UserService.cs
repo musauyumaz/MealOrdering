@@ -67,12 +67,12 @@ namespace MealOrdering.Server.Services.Services
                          .ToListAsync();
         }
 
-        public async Task<string> Login(string email, string password)
+        public async Task<UserLoginResponseDTO> Login(UserLoginRequestDTO userLoginRequestDTO)
         {
             //Veritabanı Doğrulama İşlemleri
 
-            string encryptedPassword = PasswordEncrypter.Encrypt(password);
-            User user = await _context.Users.FirstOrDefaultAsync(u => u.EmailAddress == email && u.Password == encryptedPassword);
+            string encryptedPassword = PasswordEncrypter.Encrypt(userLoginRequestDTO.Password);
+            User user = await _context.Users.FirstOrDefaultAsync(u => u.EmailAddress == userLoginRequestDTO.Email && u.Password == encryptedPassword);
 
             if (user == null)
                 throw new Exception("Kullanıcı Bulunamadı veya Bilgiler Yanlış");
@@ -86,12 +86,12 @@ namespace MealOrdering.Server.Services.Services
 
             Claim[] claims = new[]
             {
-                new Claim(ClaimTypes.Email,email)
+                new Claim(ClaimTypes.Email,user.EmailAddress)
             };
             JwtSecurityToken token = new(_configuration["JWT:Issuer"], _configuration["JWT:Audience"], claims, null, expiryDate, credentials);
             string tokenStr = new JwtSecurityTokenHandler().WriteToken(token);
 
-            return tokenStr;
+            return new() { User = _mapper.Map<UserDTO>(user), ApiToken = tokenStr };
         }
 
         public async Task<UserDTO> UpdateUser(UserDTO userDTO)
