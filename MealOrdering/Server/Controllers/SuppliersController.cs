@@ -1,12 +1,14 @@
 ﻿using MealOrdering.Server.Services.Infrastructure;
 using MealOrdering.Shared.DTOs;
 using MealOrdering.Shared.ResponseModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace MealOrdering.Server.Controllers
 {
     [Route("api/[controller]/[action]")]
     [ApiController]
+    [Authorize]
     public class SuppliersController : ControllerBase
     {
         private readonly ISupplierService _supplierService;

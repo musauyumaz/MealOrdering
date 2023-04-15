@@ -1,4 +1,8 @@
-﻿@inherits LayoutComponentBase
+﻿@using System.Security.Claims;
+@inherits LayoutComponentBase
+
+@inject ILocalStorageService _localStorageService;
+
 
 <div class="page">
 
@@ -8,7 +12,7 @@
 
     <main>
         <div class="top-row px-4">
-            <a href="https://docs.microsoft.com/aspnet/" target="_blank">About</a>
+            <a href="https://docs.microsoft.com/aspnet/" target="_blank">@loginString</a>
         </div>
 
         <article class="content px-4">
@@ -16,3 +20,29 @@
         </article>
     </main>
 </div>
+
+@code {
+    [CascadingParameter]
+    public Task<AuthenticationState> AuthenticationState { get; set; }
+
+    [Inject]
+    NavigationManager NavigationManager { get; set; }
+
+    private string loginString = "Login";
+
+    protected override async Task OnInitializedAsync()
+    {
+        AuthenticationState authenticationState = await AuthenticationState;
+        if (authenticationState.User.Identity.IsAuthenticated)
+        {
+            //authenticationState.User.Claims.FirstOrDefault(u=>u.ValueType == ClaimTypes.Email);
+            loginString = await _localStorageService.GetItemAsStringAsync("email");
+        }
+        else
+        {
+            NavigationManager.NavigateTo("/login");
+        }
+
+
+    }
+}

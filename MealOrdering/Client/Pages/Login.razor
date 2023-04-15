@@ -2,6 +2,8 @@
 @layout EmptyLayout
 
 @inject ModalManager _modalManager;
+@inject ILocalStorageService _localStorageService;
+@inject AuthenticationStateProvider _authenticationStateProvider;
 
 <div class="container-fluid h-100">
     <div class="row justify-content-center align-items-center h-100">
@@ -35,14 +37,28 @@
         HttpResponseMessage httpResponseMessage = await HttpClient.PostAsJsonAsync<UserLoginRequestDTO>("api/Users/Login", userLoginRequestDTO);
         if (httpResponseMessage.IsSuccessStatusCode)
         {
-            ServiceResponse<UserLoginResponseDTO> serviceResponse = await httpResponseMessage.Content.ReadFromJsonAsync<ServiceResponse<UserLoginResponseDTO>>();
+            try
+            {
+                ServiceResponse<UserLoginResponseDTO> serviceResponse = await httpResponseMessage.Content.ReadFromJsonAsync<ServiceResponse<UserLoginResponseDTO>>();
 
-            if (serviceResponse.Success)
-                NavigationManager.NavigateTo("/");
+                if (serviceResponse.Success)
+                {
+                    await _localStorageService.SetItemAsync("token", serviceResponse.Value.ApiToken);
+                    await _localStorageService.SetItemAsync("email", serviceResponse.Value.User.EmailAddress);
 
-            else
-                _modalManager.ShowMessageAsync("Login Error", serviceResponse.Message);
+                    (_authenticationStateProvider as AuthStateProvider).NotifyUserLoginAsync(serviceResponse.Value.User.EmailAddress);
+                    HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", serviceResponse.Value.ApiToken);
+                    NavigationManager.NavigateTo("/");
+                }
 
+
+                else
+                    _modalManager.ShowMessageAsync("Login Error", serviceResponse.Message);
+            }
+            catch (Exception ex)
+            {
+                _modalManager.ShowMessageAsync("Login Error", ex.Message);
+            }
         }
     }
 }
